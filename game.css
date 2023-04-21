@@ -1,0 +1,91 @@
+body{
+    background-color:#615c5c;
+}
+h1{
+    font-size: 60px;
+    text-align: center;
+    text-transform:uppercase;
+    color: #2c2020;
+}
+#gameBox{
+    text-align: center;
+}
+#gameBoard{
+    border:15px solid black;
+}
+#gameScore{
+    float:left;
+    font-size:80px;
+    text-align: center;
+    font-family:"permanent marker",cursive;
+}
+#gameScore1{
+    font-size:80px;
+    text-align: center;
+    font-family:"permanent marker",cursive;
+}
+#buttons input[type="submit"]{
+    background-color: #415c45;
+    font-family:"permanent marker",cursive;
+    font-size:25px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-left: 12px;
+    transition:transform 1.2s ease-in;
+}
+#buttons input:hover{
+    background-color: coral;
+    transform:scale(1.5);
+}
+details{
+    text-align: center;
+}
+summary{
+    cursor: pointer;
+    text-transform: capitalize;
+    color:#422f2f;
+    font-size: 35px;
+    text-align: start;
+}
+details p{
+    color:rgb(11, 173, 11);
+    font-size: 25px;
+}
+/************footer*****************/
+/* footer div:nth-child(1){
+    width:100%;
+    background-color:#171414;
+    text-align:center;
+    clear:both;padding-bottom: 50px;
+}
+footer div:nth-child(1) p{
+    font-weight:700;
+    font-size:30px;
+    font-family:sans-serif;
+    text-transform:uppercase;
+    margin:10px;
+    margin-top:20px;
+}
+div span{
+    font-style:italic;
+    font-size:20px;
+    font-weight:600;
+}
+footer div:nth-child(1) a {
+    text-decoration: none;
+    color:#ffffff;
+    letter-spacing:2px;
+    
+}
+footer hr{
+    width:10%;
+} */
+footer div:nth-child(1){
+    background-color:#423f3f;
+    text-align:center;
+    color:#9b6138;
+    position:fixed;
+    width:100%;
+    bottom:0px;
+    opacity: 60%;
+}
