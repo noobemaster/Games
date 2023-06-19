@@ -4,6 +4,7 @@ const ctx=gameBord.getContext("2d");
 const gameScore=document.getElementById("gameScore");
 const easyBtn=document.getElementById("easy");
 const mediumBtn=document.getElementById("medium");
+const hardBtn=document.getElementById("hard");
 const pauseBtn=document.getElementById("pause");
 const playBtn=document.getElementById("continue");
 const restartBtn=document.getElementById("restart");
@@ -17,14 +18,63 @@ let foodx;
 let foody;
 let score=0;
 let snake=[
-    {x:unitSize*3,y:0},{x:unitSize*2,y:0},
-    {x:unitSize,y:0},{x:0,y:0}
+    {x:unitSize*3,y:unitSize},{x:unitSize*2,y:unitSize},
+    {x:unitSize,y:unitSize},{x:0,y:unitSize}
 ];
+let obst=[
+   /* //middle bar
+    {x:gameWidth/2,y:gameHeight/2-unitSize*2},
+    {x:gameWidth/2,y:gameHeight/2+unitSize*2},
+    {x:gameWidth/2,y:gameHeight/2+unitSize},
+    {x:gameWidth/2,y:gameHeight/2-unitSize},
+    {x:gameWidth/2,y:gameHeight/2},
+    //bottom middle
+    {x:gameWidth/2+unitSize*2,y:gameHeight/4*3},
+    {x:gameWidth/2-unitSize*2,y:gameHeight/4*3},
+    {x:gameWidth/2+unitSize,y:gameHeight/4*3},
+    {x:gameWidth/2-unitSize,y:gameHeight/4*3},
+    {x:gameWidth/2,y:(gameHeight*3)/4},
+    //top middle
+    {x:gameWidth/2+unitSize*2,y:gameHeight/4},
+    {x:gameWidth/2-unitSize*2,y:gameHeight/4},
+    {x:gameWidth/2+unitSize,y:gameHeight/4},
+    {x:gameWidth/2-unitSize,y:gameHeight/4},
+    {x:gameWidth/2,y:gameHeight/4},*/
+    //top right
+    {x:gameWidth-unitSize,y:unitSize*2},
+    {x:gameWidth-unitSize,y:unitSize},
+    {x:gameWidth-unitSize*3,y:0},
+    {x:gameWidth-unitSize*2,y:0},
+    {x:gameWidth-unitSize,y:0},
+    //top left
+    {x:0,y:unitSize*2},
+    {x:0,y:unitSize},
+    {x:unitSize*2,y:0},
+    {x:unitSize,y:0},
+    {x:0,y:0},
+   //bottom left
+    {x:unitSize*2,y:gameHeight-unitSize},
+    {x:unitSize,y:gameHeight-unitSize},
+    {x:0,y:gameHeight-unitSize*3},
+    {x:0,y:gameHeight-unitSize*2},
+    {x:0,y:gameHeight-unitSize},
+    //bottom right
+    {x:gameHeight-unitSize,y:gameHeight-unitSize*3},
+    {x:gameHeight-unitSize,y:gameHeight-unitSize*2}, 
+    {x:gameHeight-unitSize*3,y:gameHeight-unitSize},
+    {x:gameHeight-unitSize*2,y:gameHeight-unitSize},
+    {x:gameHeight-unitSize,y:gameHeight-unitSize},
+    {x:gameWidth,y:gameHeight}
+]
 let time=500;
 gameBoard.style.display='none';
+pauseBtn.style.display='none';
+playBtn.style.display='none';
+restartBtn.style.display='none';
 window.addEventListener("keydown",changeDirection);
 easyBtn.addEventListener("click",easy);
 mediumBtn.addEventListener("click",medium);
+hardBtn.addEventListener("click",hard);
 function changeDirection(event){
     const keyPressed=event.keyCode,up=38,down=40,left=37,right=39;
     const upd=(yVelocity==-unitSize),downd=(yVelocity==unitSize); 
@@ -42,8 +92,9 @@ function changeDirection(event){
     
 };
 function easy(){
-    gameStart();gameBoard.style.display="unset";
-easyBtn.style.display="none";mediumBtn.style.display="none";
+    gameStart();gameBoard.style.display="unset";pauseBtn.style.display='unset';
+    playBtn.style.display='unset';restartBtn.style.display='unset';
+easyBtn.style.display="none";mediumBtn.style.display="none";hardBtn.style.display="none";
 function gameStart(){
     running=0;
     gameScore.textContent=score;
@@ -118,12 +169,12 @@ function checkGameOver(){
     case(snake[0].y<0):snake[0].y=gameHeight; break;      
     } 
     //if you want to bite yourself==gameover
-    /* for(let i=1;i<snake.length;i++){ 
+     for(let i=1;i<snake.length;i++){ 
       if(snake[i].x==snake[0].x&&snake[i].y==snake[0].y){
         running=3;
     
       };} 
- */
+ 
 };
 function displayGameOver(){
     clearBoard();drawSnake();
@@ -160,8 +211,9 @@ function restartGame(){
     //xVelocity=unitSize; yVelocity=0;
 }; };
 function medium(){
-gameStart();gameBoard.style.display="unset";
-easyBtn.style.display="none";mediumBtn.style.display="none";
+    gameStart();gameBoard.style.display="unset";pauseBtn.style.display='unset';
+    playBtn.style.display='unset';restartBtn.style.display='unset';
+easyBtn.style.display="none";mediumBtn.style.display="none";hardBtn.style.display="none";
 function gameStart(){
     running=0;
     gameScore.textContent=score;
@@ -228,14 +280,29 @@ function checkGameOver(){
      if(snake[0].x>gameWidth-unitSize||snake[0].x<0||
         snake[0].y>gameHeight-unitSize||snake[0].y<0){
        running=3;       
-    } 
+    } /*
     for(let i=1;i<snake.length;i++){ 
       if(snake[i].x==snake[0].x&&snake[i].y==snake[0].y){
         running=3;};
-    }
+    }*/
+    obstacle();
 };
+function obstacle(){
+    ctx.fillStyle="darkred";
+    ctx.strokeStyle="black";
+    obst.forEach(obstcl=>{
+        ctx.fillRect(obstcl.x,obstcl.y,unitSize,unitSize);
+        ctx.strokeRect(obstcl.x,obstcl.y,unitSize,unitSize);})
+    obst.forEach(val=>{
+        if(snake[0].x==val.x && snake[0].y==val.y){
+            running=3;
+        }
+    })
+       for(let i=0;i<obst.length;i++){
+        while(foodx==obst[i].x&&foody==obst[i].y){
+            createFood();drawFood(); } } };
 function displayGameOver(){
-    clearBoard();drawSnake();
+    clearBoard();obstacle(); drawSnake();
     ctx.font="90px MV Boli";
     ctx.fillStyle="red";
     ctx.textAlign="center";
@@ -263,3 +330,154 @@ function restartGame(){
     ];
     time=500;score=0;running=0;gameStart();
 };};
+function hard(){
+    gameStart();gameBoard.style.display="unset";pauseBtn.style.display='unset';
+    playBtn.style.display='unset';restartBtn.style.display='unset';
+easyBtn.style.display="none";mediumBtn.style.display="none";hardBtn.style.display="none";
+function gameStart(){
+    running=0;
+    gameScore.textContent=score;
+    createFood();
+    nextTick();
+};
+function nextTick(){
+    if(running==0){
+        setTimeout((event)=>{
+        clearBoard();
+        drawFood();
+        moveSnake();drawSnake();         
+        checkGameOver();;
+        nextTick();},time)
+    }
+    else if(running==1){displayPaused(); }
+    else displayGameOver();
+};
+function clearBoard(){
+    ctx.fillStyle="#fffdd0";
+    ctx.fillRect(0,0,gameWidth,gameHeight);
+};
+function createFood(){
+    function rando(min, max){
+        const num=Math.round((Math.random()*(max-min)+min)/unitSize)*unitSize
+        return num
+    }
+    foodx=rando(0,gameWidth-unitSize);
+    foody=rando(0,gameHeight-unitSize);
+    //prevents food on body
+    for(let i=0;i<snake.length;i++){
+        while(foodx==snake[i].x&&foody==snake[i].y){
+            createFood();drawFood(); }  }
+   
+};
+ function drawFood(){
+    ctx.fillStyle="red";
+    ctx.fillRect(foodx,foody,unitSize,unitSize)
+};
+function moveSnake(){
+    const head= {x:snake[0].x+xVelocity,y:snake[0].y+yVelocity};
+    snake.unshift(head);
+    if(snake[0].x==foodx&&snake[0].y==foody){
+        score++;
+        gameScore.innerHTML=`score:${score}`;
+        createFood();
+        //increases speed
+    if(time>50){
+        time-=5;}
+    }
+    else snake.pop();
+};
+function drawSnake(){
+    //the snakes appearance
+    ctx.fillStyle="blue";
+    ctx.strokeStyle="black";
+    snake.forEach(snakePart=>{
+        ctx.fillRect(snakePart.x,snakePart.y,unitSize,unitSize);
+        ctx.strokeRect(snakePart.x,snakePart.y,unitSize,unitSize);})
+     //color of snake head
+    ctx.fillStyle="lightblue";ctx.strokeStyle="black";
+    ctx.fillRect(snake[0].x,snake[0].y,unitSize,unitSize);
+    ctx.strokeRect(snake[0].x,snake[0].y,unitSize,unitSize);
+   
+    };
+function checkGameOver(){
+    //crosses the snake through the boarders
+     switch(true){
+     case (snake[0].x>gameWidth):snake[0].x=-unitSize;break;
+    case(snake[0].y>gameHeight-unitSize):snake[0].y=-unitSize;break;
+    case(snake[0].x<0):snake[0].x=gameWidth;break;
+    case(snake[0].y<0):snake[0].y=gameHeight; break;      
+    } 
+    //if you want to bite yourself==gameover
+    for(let i=1;i<snake.length;i++){ 
+      if(snake[i].x==snake[0].x&&snake[i].y==snake[0].y){
+        running=3;
+    
+      };} 
+ obstacle();
+};
+function obstacle(){
+    obst.push(  
+    {x:gameWidth/2,y:gameHeight/2-unitSize*2},
+    {x:gameWidth/2,y:gameHeight/2+unitSize*2},
+    {x:gameWidth/2,y:gameHeight/2+unitSize},
+    {x:gameWidth/2,y:gameHeight/2-unitSize},
+    {x:gameWidth/2,y:gameHeight/2},
+    //bottom middle
+    {x:gameWidth/2+unitSize*2,y:gameHeight/4*3},
+    {x:gameWidth/2-unitSize*2,y:gameHeight/4*3},
+    {x:gameWidth/2+unitSize,y:gameHeight/4*3},
+    {x:gameWidth/2-unitSize,y:gameHeight/4*3},
+    {x:gameWidth/2,y:(gameHeight*3)/4},
+    //top middle
+    {x:gameWidth/2+unitSize*2,y:gameHeight/4},
+    {x:gameWidth/2-unitSize*2,y:gameHeight/4},
+    {x:gameWidth/2+unitSize,y:gameHeight/4},
+    {x:gameWidth/2-unitSize,y:gameHeight/4},
+    {x:gameWidth/2,y:gameHeight/4},)
+    ctx.fillStyle="darkred";
+    ctx.strokeStyle="black";
+    obst.forEach(obstcl=>{
+        ctx.fillRect(obstcl.x,obstcl.y,unitSize,unitSize);
+        ctx.strokeRect(obstcl.x,obstcl.y,unitSize,unitSize);})
+    obst.forEach(val=>{
+        if(snake[0].x==val.x && snake[0].y==val.y){
+            running=3;
+        }
+    })
+       for(let i=0;i<obst.length;i++){
+        while(foodx==obst[i].x&&foody==obst[i].y){
+            createFood();drawFood(); } } };
+function displayGameOver(){
+    clearBoard();obstacle();drawSnake();
+    ctx.font="90px MV Boli";
+    ctx.fillStyle="red";
+    ctx.textAlign="center";
+    ctx.fillText("Game over!!!",gameWidth/2,gameHeight/2);running=3;
+};
+pauseBtn.addEventListener("click",pauseGame);
+function pauseGame(event){
+        running=1;
+};
+function displayPaused(){
+    ctx.font="80px MV Boli";
+    ctx.fillStyle="darkgreen";
+    ctx.textAlign="center";
+    ctx.fillText("Game Paused",gameWidth/2,gameHeight/2);running=1;
+};
+playBtn.addEventListener("click",playGame);
+function playGame(){
+    if(running==3){
+        displayGameOver();
+    }
+    else  running=0;nextTick();
+};
+restartBtn.addEventListener("click",restartGame);
+function restartGame(){
+    snake=[
+        {x:unitSize*3,y:0},{x:unitSize*2,y:0},
+        {x:unitSize,y:0},{x:0,y:0}
+    ];
+    time=500;
+    score=0;running=0;gameStart();
+    //xVelocity=unitSize; yVelocity=0;
+}; };
