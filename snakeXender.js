@@ -14,7 +14,8 @@ const gameHeight = gameBoard.height;
 let unitSize = 25;
 let yVelocity = 0;
 let xVelocity = unitSize;
-let running = 0;
+let running;
+let timeou;
 let foodx;
 let foody;
 let score = 0;
@@ -116,7 +117,6 @@ function easy() {
   easyBtn.style.display = "none";
   mediumBtn.style.display = "none";
   hardBtn.style.display = "none";
-  gameStart();
   function gameStart() {
     running = 0;
     gameScore.textContent = score;
@@ -125,9 +125,10 @@ function easy() {
     createFood();
     nextTick();
   }
+  gameStart();
   function nextTick() {
     if (running == 0) {
-      setTimeout((event) => {
+      timeou = setTimeout(() => {
         clearBoard();
         drawFood();
         moveSnake();
@@ -140,7 +141,7 @@ function easy() {
     } else displayGameOver();
   }
   function clearBoard() {
-    ctx.fillStyle = "#fffdd0";
+    ctx.fillStyle = "#fff9d0";
     ctx.fillRect(0, 0, gameWidth, gameHeight);
   }
   function createFood() {
@@ -171,9 +172,8 @@ function easy() {
       gameScore.innerHTML = `score:${score}`;
       createFood();
       //increases speed
-      if (time > 50) {
+      if (time > 40) {
         time -= 5;
-        console.log(time);
       }
     } else snake.pop();
   }
@@ -222,21 +222,26 @@ function easy() {
     ctx.textAlign = "center";
     ctx.fillText("Game over!!!", gameWidth / 2, gameHeight / 2);
     running = 3;
+    //sets new highscore
     if (score > highScore) {
       localStorage.setItem("highscore-E", score);
       alert("Congradulation You have beaten the high score");
     }
   }
   pauseBtn.addEventListener("click", pauseGame);
-  function pauseGame(event) {
-    running = 1;
+  function pauseGame() {
+    if (running == 3) {
+      displayGameOver();
+    } else running = 1;
   }
   function displayPaused() {
     ctx.font = "80px MV Boli";
     ctx.fillStyle = "darkgreen";
     ctx.textAlign = "center";
     ctx.fillText("Game Paused", gameWidth / 2, gameHeight / 2);
-    running = 1;
+    if (running == 3) {
+      displayGameOver();
+    } else running = 1;
   }
   playBtn.addEventListener("click", playGame);
   function playGame() {
@@ -250,7 +255,7 @@ function easy() {
     if (score > highScore) {
       localStorage.setItem("highscore-E", score);
     }
-
+    clearTimeout(timeou);
     snake = [
       { x: unitSize * 3, y: 0 },
       { x: unitSize * 2, y: 0 },
@@ -285,7 +290,7 @@ function medium() {
   }
   function nextTick() {
     if (running == 0) {
-      setTimeout(() => {
+      timeou = setTimeout(() => {
         clearBoard();
         drawFood();
         moveSnake();
@@ -396,7 +401,9 @@ function medium() {
   }
   pauseBtn.addEventListener("click", pauseGame);
   function pauseGame() {
-    running = 1;
+    if (running == 3) {
+      displayGameOver();
+    } else running = 1;
   }
   function displayPaused() {
     ctx.font = "80px MV Boli";
@@ -415,6 +422,7 @@ function medium() {
     if (score > highScore) {
       localStorage.setItem("highscore-E", score);
     }
+    clearTimeout(timeou);
     snake = [
       { x: unitSize * 3, y: 0 },
       { x: unitSize * 2, y: 0 },
@@ -447,7 +455,7 @@ function hard() {
   }
   function nextTick() {
     if (running == 0) {
-      setTimeout((event) => {
+      timeou = setTimeout(() => {
         clearBoard();
         drawFood();
         moveSnake();
@@ -588,7 +596,9 @@ function hard() {
   }
   pauseBtn.addEventListener("click", pauseGame);
   function pauseGame(event) {
-    running = 1;
+    if (running == 3) {
+      displayGameOver();
+    } else running = 1;
   }
   function displayPaused() {
     ctx.font = "80px MV Boli";
@@ -615,6 +625,7 @@ function hard() {
       { x: unitSize, y: 0 },
       { x: 0, y: 0 },
     ];
+    clearTimeout(timeou);
     time = 500;
     score = 0;
     running = 0;
